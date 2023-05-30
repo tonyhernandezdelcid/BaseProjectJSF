@@ -29,7 +29,7 @@
                 <h:form>
                     <h:panelGrid columns="1" border="0"  styleClass="panelperfilusuario">
 
-                        
+
 
 
 
@@ -66,30 +66,77 @@
                           draggable="false" closable="false" resizable="false">
                     <p:graphicImage value="./../../images/procesando.gif" />
                 </p:dialog>
+                <p:growl id="growl" showDetail="true" life="4500" />
 
                 <!-- fin partado de mensajes de error y procesamiento -->
                 <h:panelGrid border="0" columnClasses="gcolumclase"  columns="2">
 
 
-                    <h:form id="formMen">
-
-
-                    </h:form>
-
-                    <p:panel  styleClass="fondopanel" style="height: 500px; width: 900px; margin-top: 0px;  margin-left:20px; border:0px  "  >
-
-
-                        <h:panelGrid style="width: 100%; margin-bottom: 20px" columns="1">
-                            <h1 style=" font-size: 30px; font-weight: bold; color: #5060BA; float: left; margin-left: 5px">Usuarios</h1>
-
-                            <p:separator></p:separator>
-
-                        </h:panelGrid>
-
+                    <p:panel  styleClass="fondopanel" style="height: 500px; width: 1100px; margin-top: 0px;  margin-left:20px; border:0px  "  >
 
 
                         <h:form id="piform">
                             <p:growl id="growl" showDetail="true" life="4500" />
+
+
+                            <h:panelGrid style="width: 100%; margin-bottom: 20px" columns="1">
+                                <h1 style=" font-size: 30px; font-weight: bold; color: #5060BA; float: left; margin-left: 5px">Usuarios</h1>
+
+                                <p:separator></p:separator>
+
+                            </h:panelGrid>
+
+
+                            <h:panelGrid columns="1" style="width: 100%;">
+                                <h:panelGrid columns="6" style="float: left">
+                                    <p:commandButton id="procesarCommand" style="margin-left: 970px"  value="Agregar" update=":growl" actionListener="#{beanUsuarios.agregarUsuario()}"  onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>
+                                    <p:spacer></p:spacer>
+                                    <p:spacer></p:spacer>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+
+
+
+                            <p:scrollPanel mode="native" style="height: 100%; min-height: 360px; width: auto; margin: 5px 20px 0px; background: white; border: 0">
+                                <p:growl id="msgs" showDetail="true" />
+                                <p:dataTable var="row" emptyMessage="No se encontraron registros" widgetVar="mitablix" paginatorPosition="top" paginator="true" rows="10"
+                                             filteredValue="#{beanUsuarios.usuarios}"  selection="#{beanUsuarios.selectedUsuarios}"  id="rolesTable" value="#{beanUsuarios.usuariosDataModel}" rowKey="#{row.codigo}"
+                                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"  selectionMode="multiple" currentPageReportTemplate=" Total de usuarios: {totalRecords}">
+
+
+                                    <p:column headerText="Usuario"  style="width: 50px" filterStyle="width:80%"   filterBy="#{row.codigo}" id="codigoGrid" filterMatchMode="contains" >
+                                        #{row.codigo}
+                                    </p:column>
+
+                                    <p:column headerText="Empresa"  style="width: 180px; text-align: center" filterStyle="width:80%"  filterBy="#{row.nombre}" id="nombreGrid" filterMatchMode="contains">
+                                        #{row.nombre}
+                                    </p:column>
+
+
+
+                                    <p:column headerText="Editar" style="width:30px">
+                                        <p:commandButton id="selectButtonEdit" widgetVar="edibupiepag" update=":growl" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"  icon="ui-icon-pencil" style="width: 50px; height: 15px" title=""   >
+                                            <f:setPropertyActionListener value="#{row}" target="#{beanUsuarios.selectedUsuarioEdit}" />
+                                        </p:commandButton>
+
+                                    </p:column>
+
+                                    <p:column headerText="Ver" style="width:30px">
+                                        <p:commandButton id="selectButtonView" widgetVar="viebupiepag" update=":growl" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"  icon="ui-icon-search" style="width: 50px; height: 15px" title=""   >
+                                            <f:setPropertyActionListener value="#{row}" target="#{beanUsuarios.selectedUsuarioView}" />
+                                        </p:commandButton>
+
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        <p:commandButton id="deleteCommand" value="Eliminar" icon="ui-icon-circle-minus" onstart="PF('eliminaClienteDialog').show();" />
+                                    </f:facet>
+
+                                </p:dataTable>
+                            </p:scrollPanel>
+
+
 
 
 
@@ -100,7 +147,44 @@
 
 
 
-            <!-- Fin de dialogo de recuperacion de login-->
+                <p:dialog id="insertarUsuario" showHeader="false" widgetVar="insertarUsuarioDialog" modal="true" resizable="false"
+                          height="200"  width="490"   style="background: white;">
+                    <h:form id="formInserUsu">
+
+                        <h2 style=" margin-top: 10px; font-size: 22px ">Agregar usuario </h2>
+                        <p:separator ></p:separator>
+                    </h:form>
+
+                    <h:form id="formInserUsu2" >
+
+                        <h:panelGrid    columns="5" border="0" style="margin-top: 0px"  columnClasses="gcolumclase,gcolumclase">
+                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"    id="confirmaAsocia2" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide(); PF('mitablix').clearFilters();"  />
+                            <p:commandButton value="Cancelar" update=":growl" id="cancelaAsocia2" icon="ui-icon-closethick" oncomplete="PF('insertarUsuarioDialog').hide()"   />
+
+                        </h:panelGrid>
+
+
+                        <h:panelGrid  columns="2" border="0" style="margin-top: 10px; width: 450px"  columnClasses="gcolumclase,gcolumclase">
+
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Código"></h:outputLabel>
+                            <p:inputText id="usercod" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioCodigo}" maxlength="15"></p:inputText>
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Nombre"></h:outputLabel>
+                            <p:inputText id="usernom" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioNombre}" maxlength="15"></p:inputText>
+
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Teléfono"></h:outputLabel>
+                            <p:inputText id="usertel" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioTelefono}" maxlength="15"></p:inputText>
+
+
+                        </h:panelGrid>
+
+
+                    </h:form>
+                </p:dialog>
+
+
+
+
+                <!-- Fin de dialogo de recuperacion de login-->
 
                 <script type="text/javascript" charset="iso-8859-1">
 
