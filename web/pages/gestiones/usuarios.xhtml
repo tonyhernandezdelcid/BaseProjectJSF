@@ -105,32 +105,34 @@
                                              paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport}"  selectionMode="multiple" currentPageReportTemplate=" Total de usuarios: {totalRecords}">
 
 
-                                    <p:column headerText="Usuario"  style="width: 50px" filterStyle="width:80%"   filterBy="#{row.codigo}" id="codigoGrid" filterMatchMode="contains" >
+                                    <p:column headerText="Código"  style="width: 50px" filterStyle="width:80%"   filterBy="#{row.codigo}" id="codigoGrid" filterMatchMode="contains" >
                                         #{row.codigo}
                                     </p:column>
 
-                                    <p:column headerText="Empresa"  style="width: 180px; text-align: center" filterStyle="width:80%"  filterBy="#{row.nombre}" id="nombreGrid" filterMatchMode="contains">
+                                    <p:column headerText="Nombre"  style="width: 180px; text-align: center" filterStyle="width:80%"  filterBy="#{row.nombre}" id="nombreGrid" filterMatchMode="contains">
                                         #{row.nombre}
                                     </p:column>
 
 
 
-                                    <p:column headerText="Editar" style="width:30px">
+                                    <p:column headerText="Editar" style="width:10px">
+                                        <center>
                                         <p:commandButton id="selectButtonEdit" widgetVar="edibupiepag" update=":growl" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"  icon="ui-icon-pencil" style="width: 50px; height: 15px" title=""   >
                                             <f:setPropertyActionListener value="#{row}" target="#{beanUsuarios.selectedUsuarioEdit}" />
                                         </p:commandButton>
-
+                                            </center>
                                     </p:column>
 
-                                    <p:column headerText="Ver" style="width:30px">
-                                        <p:commandButton id="selectButtonView" widgetVar="viebupiepag" update=":growl" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"  icon="ui-icon-search" style="width: 50px; height: 15px" title=""   >
+                                    <p:column headerText="Ver" style="width:10px">
+                                        <center>
+                                        <p:commandButton id="selectButtonView" widgetVar="viebupiepag" update=":growl" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"  icon="ui-icon-search" style="width: 50px; height: 15px; " title=""   >
                                             <f:setPropertyActionListener value="#{row}" target="#{beanUsuarios.selectedUsuarioView}" />
                                         </p:commandButton>
-
+                                            </center>
                                     </p:column>
 
                                     <f:facet name="footer">
-                                        <p:commandButton id="deleteCommand" value="Eliminar" icon="ui-icon-circle-minus" onstart="PF('eliminaClienteDialog').show();" />
+                                        <p:commandButton id="deleteCommand" value="Eliminar" icon="ui-icon-circle-minus" onstart="PF('eliminaUsuarioDialog').show();" />
                                     </f:facet>
 
                                 </p:dataTable>
@@ -182,7 +184,93 @@
                 </p:dialog>
 
 
+                <p:dialog id="modificarUsuario" showHeader="false" widgetVar="modificarUsuarioDialog" modal="true" resizable="false"
+                          height="200"     width="490"   style="background: white;">
+                    <h:form id="formModiUsu">
+                        <h2 style=" margin-top: 10px; font-size: 22px ">Editar usuario </h2>
+                        <p:separator ></p:separator>
+                    </h:form>
+                    <h:form id="formModiUsu2" >
+                        <h:panelGrid    columns="5" border="0" style="margin-top: 0px"  columnClasses="gcolumclase,gcolumclase">
+                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"   id="confirmaModi2"  onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();PF('mitablix').clearFilters();"  icon="ui-icon-check"  />
+                            <p:commandButton value="Cancelar" update=":growl" id="cancelaModi2"  icon="ui-icon-closethick" oncomplete="PF('modificarUsuarioDialog').hide()" />
+                        </h:panelGrid>
+                      
+                        
+                        
+                        
+                         <h:panelGrid  columns="2" border="0" style="margin-top: 10px; width: 450px"  columnClasses="gcolumclase,gcolumclase">
 
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Código"></h:outputLabel>
+                            <p:inputText id="usercodMod" readonly="true" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioCodigo}" maxlength="15"></p:inputText>
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Nombre"></h:outputLabel>
+                            <p:inputText id="usernomMod" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioNombre}" maxlength="15"></p:inputText>
+
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Teléfono"></h:outputLabel>
+                            <p:inputText id="usertelMod" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioTelefono}" maxlength="15"></p:inputText>
+
+
+                        </h:panelGrid>
+                        
+
+                    </h:form>
+
+
+                </p:dialog>
+                
+                
+                
+                <p:dialog id="visualizarUsuario" showHeader="false" widgetVar="visualizarUsuarioDialog" modal="true" resizable="false"
+                          height="200"     width="490"   style="background: white;">
+                    <h:form id="formVisUsu">
+                        <h2 style=" margin-top: 10px; font-size: 22px ">Visualizar usuario </h2>
+                        <p:separator ></p:separator>
+                    </h:form>
+                    <h:form id="formVisUsu2" >
+                        <h:panelGrid    columns="5" border="0" style="margin-top: 0px"  columnClasses="gcolumclase,gcolumclase">
+                            
+                            <p:commandButton value="Cancelar" update=":growl" style="margin-left: 310px" id="cancelaVis2"  icon="ui-icon-closethick" oncomplete="PF('visualizarUsuarioDialog').hide()" />
+                        </h:panelGrid>
+                      
+                        
+                        
+                        
+                         <h:panelGrid  columns="2" border="0" style="margin-top: 10px; width: 450px"  columnClasses="gcolumclase,gcolumclase">
+
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Código"></h:outputLabel>
+                            <p:inputText id="usercodVis" readonly="true" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioCodigo}" maxlength="15"></p:inputText>
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Nombre"></h:outputLabel>
+                            <p:inputText id="usernomVis" readonly="true" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioNombre}" maxlength="15"></p:inputText>
+
+                            <h:outputLabel styleClass="etiquetaIdentificacionDatosContent" value="Teléfono"></h:outputLabel>
+                            <p:inputText id="usertelVis" readonly="true" onkeyup="mayus(this);" style="width:320px; margin-left: 16px " value="#{beanUsuarios.usuarioTelefono}" maxlength="15"></p:inputText>
+
+
+                        </h:panelGrid>
+                        
+
+                    </h:form>
+
+
+                </p:dialog>
+                
+                
+                <p:dialog id="EliminaUsuario" showHeader="false" widgetVar="eliminaUsuarioDialog" modal="true" resizable="false"
+                          height="140"     width="250"   style="background: white;">
+                    <h:form id="Eliminacli">
+                        <h2 style=" margin-top: 10px; font-size: 22px ">Eliminar usuarios </h2>
+                        <p:separator ></p:separator>
+                        <h:panelGrid columns="1">
+                            <p class="p-m-0">
+                                ¿Está seguro que desea eliminar los usuarios?
+                            </p>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" style="margin-left: 60px">
+                            <p:commandButton value="Si" onsuccess="PF('eliminaUsuarioDialog').hide();PF('mitablix').clearFilters();" update=":growl" actionListener="#{beanUsuarios.eliminaUsuario}" style="margin-right: 20px"/>
+                            <p:commandButton value="No" onsuccess="PF('eliminaUsuarioDialog').hide();" update=":growl"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
 
                 <!-- Fin de dialogo de recuperacion de login-->
 
