@@ -9,6 +9,7 @@ import com.ah.baseprojectjsf.usuarios.Usuario;
 import com.ah.baseprojectjsf.usuarios.UsuariosDataModel;
 import java.util.LinkedList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
@@ -48,6 +49,12 @@ public class BeanUsuarios {
     }
 
     public void setSelectedUsuarios(Object[] selectedUsuarios) {
+        System.out.println("entrando a selected usuarios object");
+        try {
+            System.out.println(((Usuario)selectedUsuarios[0]).getCodigo());
+        } catch (Exception e) {
+        }
+        
         this.selectedUsuarios = selectedUsuarios;
     }
 
@@ -64,10 +71,37 @@ public class BeanUsuarios {
     }
 
     public void setSelectedUsuarioEdit(Usuario selectedUsuarioEdit) {
+        if (selectedUsuarioEdit != null && selectedUsuarioEdit.getCodigo()!= null && selectedUsuarioEdit.getCodigo().trim().length() > 0) {
+            usuarioCodigo = quitaNulo(selectedUsuarioEdit.getCodigo()); 
+            usuarioNombre = quitaNulo(selectedUsuarioEdit.getNombre()); 
+            usuarioTelefono = quitaNulo(selectedUsuarioEdit.getTelefono()); 
+            
+            RequestContext contextoRequest = RequestContext.getCurrentInstance();
+            contextoRequest.update("formModiUsu2:usercodMod");
+            contextoRequest.update("formModiUsu2:usernomMod");
+            contextoRequest.update("formModiUsu2:usertelMod");
+            contextoRequest.execute("PF('modificarUsuarioDialog').show()");
+        }
+        
+        
         this.selectedUsuarioEdit = selectedUsuarioEdit;
     }
 
     public void setSelectedUsuarioView(Usuario selectedUsuarioView) {
+        
+        
+        if (selectedUsuarioView != null && selectedUsuarioView.getCodigo()!= null && selectedUsuarioView.getCodigo().trim().length() > 0) {
+            usuarioCodigo = quitaNulo(selectedUsuarioView.getCodigo()); 
+            usuarioNombre = quitaNulo(selectedUsuarioView.getNombre()); 
+            usuarioTelefono = quitaNulo(selectedUsuarioView.getTelefono()); 
+            
+            RequestContext contextoRequest = RequestContext.getCurrentInstance();
+            contextoRequest.update("formVisUsu2:usercodVis");
+            contextoRequest.update("formVisUsu2:usernomVis");
+            contextoRequest.update("formVisUsu2:usertelVis");
+            contextoRequest.execute("PF('visualizarUsuarioDialog').show()");
+        }
+        
         this.selectedUsuarioView = selectedUsuarioView;
     }
 
@@ -114,6 +148,55 @@ public class BeanUsuarios {
         contextoRequest.update("formInserUsu2:usertel");
         contextoRequest.execute("PF('insertarUsuarioDialog').show()");
 
+    }
+    
+    
+    public void eliminaUsuario() {
+        List<Usuario> seleccionados = new LinkedList<>();
+        for (Object ob : selectedUsuarios) {
+            seleccionados.add((Usuario) ob);
+        }
+        if (seleccionados.size() > 0) {
+            System.err.println("si hay clientes seleccionados");
+            boolean todook = false;
+            for (Usuario cli : seleccionados) {
+                //cli.setCodigo(cli.getCodigo());
+                System.out.println("usuario" + cli.getCodigo());
+                String usua = cli.getCodigo();
+//                boolean res = eliminaUsuarioage(usua);
+//                if (res) {
+//                    todook = true;
+//                }
+            }
+            if (todook) {
+//                clientes = consultaUsuariosClix();
+//                clientesCliDataModel = new ObiUsuariosDataModel(clientes);
+                selectedUsuarios = null;
+                RequestContext contextoRequest = RequestContext.getCurrentInstance();
+                contextoRequest.update("piform:rolesTable");
+
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuarios eliminados exitosamente", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "No fue posible eliminar los usuarios seleccionados", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe seleccionar los usuarios a eliminar", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+    
+    public String quitaNulo(String var) {
+        String res = "";
+        if (var != null && var.trim().length() > 0) {
+            res = var.trim();
+        } else {
+            res = "";
+        }
+        return res;
     }
 
 }
