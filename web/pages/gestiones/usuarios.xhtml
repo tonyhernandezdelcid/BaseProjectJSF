@@ -160,7 +160,7 @@
                     <h:form id="formInserUsu2" >
 
                         <h:panelGrid    columns="5" border="0" style="margin-top: 0px"  columnClasses="gcolumclase,gcolumclase">
-                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"    id="confirmaAsocia2" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide(); PF('mitablix').clearFilters();"  />
+                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"  actionListener="#{beanUsuarios.grabandoUsuario()}"  id="confirmaAsocia2" onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide(); PF('mitablix').clearFilters();"  />
                             <p:commandButton value="Cancelar" update=":growl" id="cancelaAsocia2" icon="ui-icon-closethick" oncomplete="PF('insertarUsuarioDialog').hide()"   />
 
                         </h:panelGrid>
@@ -192,7 +192,7 @@
                     </h:form>
                     <h:form id="formModiUsu2" >
                         <h:panelGrid    columns="5" border="0" style="margin-top: 0px"  columnClasses="gcolumclase,gcolumclase">
-                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"   id="confirmaModi2"  onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();PF('mitablix').clearFilters();"  icon="ui-icon-check"  />
+                            <p:commandButton value="Confirmar" update=":growl" style="margin-left: 270px"   id="confirmaModi2" actionListener="#{beanUsuarios.modificandoUsuario()}"  onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();PF('mitablix').clearFilters();"  icon="ui-icon-check"  />
                             <p:commandButton value="Cancelar" update=":growl" id="cancelaModi2"  icon="ui-icon-closethick" oncomplete="PF('modificarUsuarioDialog').hide()" />
                         </h:panelGrid>
                       

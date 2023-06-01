@@ -7,6 +7,7 @@ package com.ah.baseprojectjsf.beans;
 
 import com.ah.baseprojectjsf.usuarios.Usuario;
 import com.ah.baseprojectjsf.usuarios.UsuariosDataModel;
+import com.ah.baseprojectjsf.util.ConnectionAPIs;
 import java.util.LinkedList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -30,12 +31,10 @@ public class BeanUsuarios {
 
     public BeanUsuarios() {
 
-        usuarios = new LinkedList<>();
-        Usuario us = new Usuario();
-        us.setCodigo("C1");
-        us.setNombre("Luis Perez");
-        us.setTelefono("34343443");
-        usuarios.add(us);
+        
+        ConnectionAPIs capi = new ConnectionAPIs();
+        usuarios = capi.consultarUsuariosApi();
+        
         usuariosDataModel = new UsuariosDataModel((Object) usuarios);
 
     }
@@ -94,7 +93,7 @@ public class BeanUsuarios {
             usuarioCodigo = quitaNulo(selectedUsuarioView.getCodigo()); 
             usuarioNombre = quitaNulo(selectedUsuarioView.getNombre()); 
             usuarioTelefono = quitaNulo(selectedUsuarioView.getTelefono()); 
-            
+            System.out.println("test");
             RequestContext contextoRequest = RequestContext.getCurrentInstance();
             contextoRequest.update("formVisUsu2:usercodVis");
             contextoRequest.update("formVisUsu2:usernomVis");
@@ -150,6 +149,30 @@ public class BeanUsuarios {
 
     }
     
+    public void grabandoUsuario(){
+        ConnectionAPIs cpi = new ConnectionAPIs();
+        Usuario usr = new Usuario();
+        usr.setCodigo(usuarioCodigo);
+        usr.setNombre(usuarioNombre);
+        usr.setTelefono(usuarioTelefono);
+        System.out.println(cpi.insertarUsuariosApi(usr));
+        RequestContext contextoRequest = RequestContext.getCurrentInstance();
+        contextoRequest.execute("PF('insertarUsuarioDialog').hide()");
+        
+    }
+    
+    public void modificandoUsuario(){
+        ConnectionAPIs cpi = new ConnectionAPIs();
+        Usuario usr = new Usuario();
+        usr.setCodigo(usuarioCodigo);
+        usr.setNombre(usuarioNombre);
+        usr.setTelefono(usuarioTelefono);
+        System.out.println(cpi.modificarUsuarioApi(usr));
+        RequestContext contextoRequest = RequestContext.getCurrentInstance();
+        contextoRequest.execute("PF('modificarUsuarioDialog').hide()");
+        
+    }
+    
     
     public void eliminaUsuario() {
         List<Usuario> seleccionados = new LinkedList<>();
@@ -159,10 +182,13 @@ public class BeanUsuarios {
         if (seleccionados.size() > 0) {
             System.err.println("si hay clientes seleccionados");
             boolean todook = false;
+            ConnectionAPIs cnapi = new ConnectionAPIs();
             for (Usuario cli : seleccionados) {
                 //cli.setCodigo(cli.getCodigo());
                 System.out.println("usuario" + cli.getCodigo());
-                String usua = cli.getCodigo();
+                
+                cnapi.eliminarUsuarioApi(cli);
+                todook=true;
 //                boolean res = eliminaUsuarioage(usua);
 //                if (res) {
 //                    todook = true;
