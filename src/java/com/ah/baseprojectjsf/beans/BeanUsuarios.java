@@ -31,10 +31,9 @@ public class BeanUsuarios {
 
     public BeanUsuarios() {
 
-        
         ConnectionAPIs capi = new ConnectionAPIs();
         usuarios = capi.consultarUsuariosApi();
-        
+
         usuariosDataModel = new UsuariosDataModel((Object) usuarios);
 
     }
@@ -50,10 +49,10 @@ public class BeanUsuarios {
     public void setSelectedUsuarios(Object[] selectedUsuarios) {
         System.out.println("entrando a selected usuarios object");
         try {
-            System.out.println(((Usuario)selectedUsuarios[0]).getCodigo());
+            System.out.println(((Usuario) selectedUsuarios[0]).getCodigo());
         } catch (Exception e) {
         }
-        
+
         this.selectedUsuarios = selectedUsuarios;
     }
 
@@ -70,29 +69,27 @@ public class BeanUsuarios {
     }
 
     public void setSelectedUsuarioEdit(Usuario selectedUsuarioEdit) {
-        if (selectedUsuarioEdit != null && selectedUsuarioEdit.getCodigo()!= null && selectedUsuarioEdit.getCodigo().trim().length() > 0) {
-            usuarioCodigo = quitaNulo(selectedUsuarioEdit.getCodigo()); 
-            usuarioNombre = quitaNulo(selectedUsuarioEdit.getNombre()); 
-            usuarioTelefono = quitaNulo(selectedUsuarioEdit.getTelefono()); 
-            
+        if (selectedUsuarioEdit != null && selectedUsuarioEdit.getCodigo() != null && selectedUsuarioEdit.getCodigo().trim().length() > 0) {
+            usuarioCodigo = quitaNulo(selectedUsuarioEdit.getCodigo());
+            usuarioNombre = quitaNulo(selectedUsuarioEdit.getNombre());
+            usuarioTelefono = quitaNulo(selectedUsuarioEdit.getTelefono());
+
             RequestContext contextoRequest = RequestContext.getCurrentInstance();
             contextoRequest.update("formModiUsu2:usercodMod");
             contextoRequest.update("formModiUsu2:usernomMod");
             contextoRequest.update("formModiUsu2:usertelMod");
             contextoRequest.execute("PF('modificarUsuarioDialog').show()");
         }
-        
-        
+
         this.selectedUsuarioEdit = selectedUsuarioEdit;
     }
 
     public void setSelectedUsuarioView(Usuario selectedUsuarioView) {
-        
-        
-        if (selectedUsuarioView != null && selectedUsuarioView.getCodigo()!= null && selectedUsuarioView.getCodigo().trim().length() > 0) {
-            usuarioCodigo = quitaNulo(selectedUsuarioView.getCodigo()); 
-            usuarioNombre = quitaNulo(selectedUsuarioView.getNombre()); 
-            usuarioTelefono = quitaNulo(selectedUsuarioView.getTelefono()); 
+
+        if (selectedUsuarioView != null && selectedUsuarioView.getCodigo() != null && selectedUsuarioView.getCodigo().trim().length() > 0) {
+            usuarioCodigo = quitaNulo(selectedUsuarioView.getCodigo());
+            usuarioNombre = quitaNulo(selectedUsuarioView.getNombre());
+            usuarioTelefono = quitaNulo(selectedUsuarioView.getTelefono());
             System.out.println("test");
             RequestContext contextoRequest = RequestContext.getCurrentInstance();
             contextoRequest.update("formVisUsu2:usercodVis");
@@ -100,7 +97,7 @@ public class BeanUsuarios {
             contextoRequest.update("formVisUsu2:usertelVis");
             contextoRequest.execute("PF('visualizarUsuarioDialog').show()");
         }
-        
+
         this.selectedUsuarioView = selectedUsuarioView;
     }
 
@@ -148,32 +145,95 @@ public class BeanUsuarios {
         contextoRequest.execute("PF('insertarUsuarioDialog').show()");
 
     }
-    
-    public void grabandoUsuario(){
-        ConnectionAPIs cpi = new ConnectionAPIs();
-        Usuario usr = new Usuario();
-        usr.setCodigo(usuarioCodigo);
-        usr.setNombre(usuarioNombre);
-        usr.setTelefono(usuarioTelefono);
-        System.out.println(cpi.insertarUsuariosApi(usr));
-        RequestContext contextoRequest = RequestContext.getCurrentInstance();
-        contextoRequest.execute("PF('insertarUsuarioDialog').hide()");
-        
+
+    public void grabandoUsuario() {
+
+        if (quitaNulo(usuarioCodigo).length() > 0) {
+            if (quitaNulo(usuarioNombre).length() > 0) {
+                if (quitaNulo(usuarioTelefono).length() > 0) {
+                    ConnectionAPIs cpi = new ConnectionAPIs();
+                    Usuario usr = new Usuario();
+                    usr.setCodigo(usuarioCodigo);
+                    usr.setNombre(usuarioNombre);
+                    usr.setTelefono(usuarioTelefono);
+                    boolean res = cpi.insertarUsuariosApi(usr);
+                    if (res) {
+                        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario creado exitosamente", "");
+                        FacesContext.getCurrentInstance().addMessage(null, msg);
+                        RequestContext contextoRequest = RequestContext.getCurrentInstance();
+                        contextoRequest.execute("PF('insertarUsuarioDialog').hide()");
+
+                        ConnectionAPIs capi = new ConnectionAPIs();
+                        usuarios = capi.consultarUsuariosApi();
+
+                        usuariosDataModel = new UsuariosDataModel((Object) usuarios);
+
+                        contextoRequest.update("piform:rolesTable");
+
+                    } else {
+                        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "No fue posible crear al usuario", "");
+                        FacesContext.getCurrentInstance().addMessage(null, msg);
+                    }
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El teléfono del usuario es obligatorio", "");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                }
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El nombre de usuario es obligatorio", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El código de usuario es obligatorio", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
     }
-    
-    public void modificandoUsuario(){
-        ConnectionAPIs cpi = new ConnectionAPIs();
-        Usuario usr = new Usuario();
-        usr.setCodigo(usuarioCodigo);
-        usr.setNombre(usuarioNombre);
-        usr.setTelefono(usuarioTelefono);
-        System.out.println(cpi.modificarUsuarioApi(usr));
-        RequestContext contextoRequest = RequestContext.getCurrentInstance();
-        contextoRequest.execute("PF('modificarUsuarioDialog').hide()");
-        
+
+    public void modificandoUsuario() {
+
+        if (quitaNulo(usuarioCodigo).length() > 0) {
+            if (quitaNulo(usuarioNombre).length() > 0) {
+                if (quitaNulo(usuarioTelefono).length() > 0) {
+                    ConnectionAPIs cpi = new ConnectionAPIs();
+                    Usuario usr = new Usuario();
+                    usr.setCodigo(usuarioCodigo);
+                    usr.setNombre(usuarioNombre);
+                    usr.setTelefono(usuarioTelefono);
+                    boolean res = cpi.modificarUsuarioApi(usr);
+
+                    if (res) {
+                        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario editado exitosamente", "");
+                        FacesContext.getCurrentInstance().addMessage(null, msg);
+                        RequestContext contextoRequest = RequestContext.getCurrentInstance();
+                        contextoRequest.execute("PF('modificarUsuarioDialog').hide()");
+
+                        ConnectionAPIs capi = new ConnectionAPIs();
+                        usuarios = capi.consultarUsuariosApi();
+
+                        usuariosDataModel = new UsuariosDataModel((Object) usuarios);
+
+                        contextoRequest.update("piform:rolesTable");
+                    } else {
+                        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "No fue posible editar al usuario", "");
+                        FacesContext.getCurrentInstance().addMessage(null, msg);
+                    }
+
+                } else {
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El teléfono del usuario es obligatorio", "");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                }
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El nombre de usuario es obligatorio", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        } else {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "El código de usuario es obligatorio", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
     }
-    
-    
+
     public void eliminaUsuario() {
         List<Usuario> seleccionados = new LinkedList<>();
         for (Object ob : selectedUsuarios) {
@@ -181,31 +241,36 @@ public class BeanUsuarios {
         }
         if (seleccionados.size() > 0) {
             System.err.println("si hay clientes seleccionados");
-            boolean todook = false;
+            boolean todook = true;
+            boolean resope = false;
             ConnectionAPIs cnapi = new ConnectionAPIs();
             for (Usuario cli : seleccionados) {
                 //cli.setCodigo(cli.getCodigo());
                 System.out.println("usuario" + cli.getCodigo());
-                
-                cnapi.eliminarUsuarioApi(cli);
-                todook=true;
-//                boolean res = eliminaUsuarioage(usua);
-//                if (res) {
-//                    todook = true;
-//                }
+
+                resope = cnapi.eliminarUsuarioApi(cli);
+                if (!resope) {
+                    todook = false;
+                }
+
             }
             if (todook) {
-//                clientes = consultaUsuariosClix();
-//                clientesCliDataModel = new ObiUsuariosDataModel(clientes);
+
                 selectedUsuarios = null;
+
+                ConnectionAPIs capi = new ConnectionAPIs();
+                usuarios = capi.consultarUsuariosApi();
+
+                usuariosDataModel = new UsuariosDataModel((Object) usuarios);
+
                 RequestContext contextoRequest = RequestContext.getCurrentInstance();
                 contextoRequest.update("piform:rolesTable");
 
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuarios eliminados exitosamente", "");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario eliminado exitosamente", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
             } else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "No fue posible eliminar los usuarios seleccionados", "");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "No fue posible eliminar al usuario seleccionado", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             }
         } else {
@@ -214,7 +279,7 @@ public class BeanUsuarios {
         }
 
     }
-    
+
     public String quitaNulo(String var) {
         String res = "";
         if (var != null && var.trim().length() > 0) {
