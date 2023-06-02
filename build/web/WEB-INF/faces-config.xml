@@ -8,9 +8,4 @@
         <managed-bean-class>com.ah.baseprojectjsf.beans.BeanUsuarios</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
-    <managed-bean>
-        <managed-bean-name>beanMenu</managed-bean-name>
-        <managed-bean-class>com.ah.baseprojectjsf.beans.BeanMenu</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
 </faces-config>
